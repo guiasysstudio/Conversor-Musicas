@@ -1,4 +1,4 @@
-VERSAO = "1.2.2"
+VERSAO = "1.2.3"
 NOME_APP = "Conversor Músicas"
 GITHUB_OWNER = "guiasysstudio"
 GITHUB_REPO = "Conversor-Musicas"

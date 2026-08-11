@@ -3,7 +3,7 @@ chcp 65001 >nul
 title Publicar Release - Conversor Musicas
 cd /d "%~dp0"
 
-set "TAG=v1.2.2"
+set "TAG=v1.2.3"
 set "ARQUIVO=installer_output\Conversor-Musicas-Setup.exe"
 
 if not exist "%ARQUIVO%" (
@@ -40,8 +40,8 @@ if not errorlevel 1 (
 ) else (
     gh release create "%TAG%" "%ARQUIVO%" ^
       --repo guiasysstudio/Conversor-Musicas ^
-      --title "Conversor Músicas v1.2.2" ^
-      --notes "Corrige o erro de permissão ao iniciar o programa instalado. O Conversor Músicas agora é instalado por usuário em LocalAppData, mantendo as pastas editáveis de modelos e saída dentro da raiz do programa."
+      --title "Conversor Músicas v1.2.3" ^
+      --notes "Atualiza o instalador para detectar automaticamente instalações existentes, reutilizar qualquer diretório escolhido anteriormente e ocultar a seleção de diretório durante atualizações. Também preserva os modelos personalizados do usuário."
 )
 
 if errorlevel 1 (

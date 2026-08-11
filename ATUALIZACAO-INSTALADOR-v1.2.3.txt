@@ -1,0 +1,34 @@
+CONVERSOR MÚSICAS v1.2.3
+COMPORTAMENTO DEFINITIVO DO INSTALADOR
+
+PRIMEIRA INSTALAÇÃO
+- O instalador não encontra o AppId no Windows.
+- A página "Selecionar local de destino" aparece.
+- O diretório padrão é:
+  %LOCALAPPDATA%\Programs\Conversor Músicas
+- O usuário pode escolher outro diretório gravável.
+
+ATUALIZAÇÃO
+- O instalador encontra a instalação anterior pelo AppId permanente.
+- Recupera automaticamente o diretório onde o programa já está instalado.
+- A página de escolha do diretório NÃO aparece.
+- A atualização é instalada sobre a mesma instalação.
+- Não cria uma segunda entrada do Conversor Músicas.
+
+DIRETÓRIO PERSONALIZADO
+Exemplo:
+D:\Programas\Conversor Músicas
+
+Se a primeira instalação foi feita nesse diretório, uma futura atualização
+recupera esse mesmo caminho automaticamente. O usuário não precisa selecionar
+o diretório novamente.
+
+MODELOS
+A pasta modelos continua dentro da raiz do programa.
+Arquivos de modelo existentes não são sobrescritos por atualizações.
+
+IDENTIDADE PERMANENTE
+AppId:
+B17181A7-C736-4A0A-9D36-821F70A96C51
+
+NUNCA alterar esse AppId em versões futuras.

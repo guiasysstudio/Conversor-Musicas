@@ -37,13 +37,10 @@ if errorlevel 1 (
 )
 
 echo.
-echo Copiando modelos editaveis para a raiz do programa...
-xcopy "modelos" "dist\ConversorMusicas\modelos\" /E /I /Y >nul
-
-if not exist "dist\ConversorMusicas\saida" mkdir "dist\ConversorMusicas\saida"
-
-echo.
 echo Programa gerado em:
 echo dist\ConversorMusicas\ConversorMusicas.exe
+echo.
+echo OBS: os modelos editaveis sao adicionados pelo instalador
+echo e preservados durante atualizacoes.
 echo.
 pause
