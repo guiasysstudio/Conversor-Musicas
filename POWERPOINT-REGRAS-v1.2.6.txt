@@ -1,0 +1,51 @@
+CONVERSOR MÚSICAS v1.2.6 - REGRAS POWERPOINT
+
+NOVA CONFIGURAÇÃO
+⚙ Configurações > Regras de conversão
+
+Opções:
+- 1 linha por slide
+- 2 linhas por slide (padrão)
+- 3 linhas por slide
+
+REGRAS FIXAS
+- A primeira linha do TXT continua sendo sempre o título.
+- O título continua sempre no primeiro slide.
+- Uma linha em branco separa estrofes.
+- A divisão reinicia a cada nova estrofe.
+- Estrofes diferentes nunca são misturadas.
+
+EXEMPLO - ESTROFE COM 5 LINHAS
+
+1 linha por slide:
+slide 2 = linha 1
+slide 3 = linha 2
+slide 4 = linha 3
+slide 5 = linha 4
+slide 6 = linha 5
+
+2 linhas por slide:
+slide 2 = linhas 1 + 2
+slide 3 = linhas 3 + 4
+slide 4 = linha 5
+
+3 linhas por slide:
+slide 2 = linhas 1 + 2 + 3
+slide 3 = linhas 4 + 5
+
+PERSISTÊNCIA
+A regra escolhida é salva no Windows e permanece após fechar,
+abrir e atualizar o programa.
+
+MODELOS POWERPOINT
+O programa continua lendo automaticamente qualquer .pptx colocado em:
+modelos\powerpoint
+
+Cada modelo deve seguir o padrão:
+- slide 1: capa/título, com shape nomeado caixa_titulo
+- slide 2: letra, com shape nomeado caixa_letra
+- slide 3: encerramento/fundo sem texto
+
+A formatação não é recriada pelo Conversor.
+O PowerPoint real duplica o slide 2 do próprio modelo selecionado.
+Por isso fundo, tema, imagens, fontes, dimensões e formatações vêm do modelo.

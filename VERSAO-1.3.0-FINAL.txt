@@ -1,0 +1,39 @@
+CONVERSOR MÚSICAS v1.3.0 - VERSÃO FINAL VALIDADA
+
+POWERPOINT
+- Usa o Microsoft PowerPoint real via COM/pywin32.
+- Trabalha sobre uma cópia integral do modelo.
+- Preserva fundo, tema, imagens, fontes e formatação.
+- Modelos seguem o padrão:
+  slide 1 = título / caixa_titulo
+  slide 2 = letra / caixa_letra
+  slide 3 = encerramento sem texto.
+- Regras configuráveis:
+  1 linha por slide
+  2 linhas por slide (padrão)
+  3 linhas por slide.
+- A divisão reinicia a cada estrofe.
+
+SLJA
+- Sem áudio.
+- Imagem própria para capa.
+- Imagem própria para letras.
+- Imagens internas em JPG.
+- Estrutura compatível com o formato validado no Louvor JA.
+- Regras de 1, 2 ou 3 linhas.
+- Tela final vazia.
+
+INTERFACE
+- Regra atual exibida no topo.
+- Configurações persistentes.
+- Pasta de saída padrão = Documentos.
+- Seletores reabrem no caminho atualmente usado.
+- Sistema de atualização sem menções visíveis ao provedor.
+
+INSTALAÇÃO / ATUALIZAÇÃO
+- AppId permanente.
+- Primeira instalação permite escolher diretório.
+- Atualização detecta a instalação existente e reutiliza o mesmo diretório.
+- Modelos personalizados são preservados.
+- Instalador:
+  Conversor-Musicas-Setup v1.3.0.exe

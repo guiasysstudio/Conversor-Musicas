@@ -15,6 +15,12 @@ from .caminhos import (
 from .gerador_pptx import gerar_pptx
 from .gerador_slja import gerar_slja
 from .versao import VERSAO, NOME_APP
+from .pastas_windows import (
+    pasta_documentos,
+    pasta_inicial_para_diretorio,
+    pasta_inicial_para_arquivo,
+)
+from .configuracoes import carregar_configuracoes, salvar_configuracoes, restaurar_padrao
 from .atualizador import verificar_atualizacao, configurado, baixar_instalador, executar_instalador
 
 
@@ -50,10 +56,14 @@ class ConversorApp(ctk.CTk):
         self.arquivos = []
         self.tipo = tk.StringVar(value="PowerPoint")
         self.modelo = tk.StringVar()
-        self.pasta_saida = tk.StringVar(value=str(PASTA_SAIDA))
+        self.pasta_saida = tk.StringVar(value=str(pasta_documentos()))
         self.imagem_capa = tk.StringVar()
         self.imagem_letra = tk.StringVar()
         self.status = tk.StringVar(value="Pronto para converter.")
+        self.configuracoes = carregar_configuracoes()
+        self.linhas_por_slide = int(self.configuracoes.get("linhas_por_slide", 2))
+        self.regra_atual = tk.StringVar()
+        self._atualizar_texto_regra()
 
         self._montar_interface()
         self._carregar_modelos()
@@ -90,6 +100,18 @@ class ConversorApp(ctk.CTk):
             font=ctk.CTkFont(size=13)
         ).grid(row=1, column=1, sticky="nw", pady=(2, 0))
 
+        self.chip_regra = ctk.CTkLabel(
+            cabecalho,
+            textvariable=self.regra_atual,
+            fg_color=FUNDO_2,
+            text_color=TEXTO_2,
+            corner_radius=10,
+            padx=14,
+            pady=8,
+            font=ctk.CTkFont(size=11, weight="bold"),
+        )
+        self.chip_regra.grid(row=0, column=2, rowspan=2, padx=(14, 0))
+
         ctk.CTkButton(
             cabecalho,
             text="⚙",
@@ -102,7 +124,7 @@ class ConversorApp(ctk.CTk):
             border_color=BORDA,
             font=ctk.CTkFont(size=22),
             command=self._abrir_configuracoes
-        ).grid(row=0, column=2, rowspan=2, padx=(14, 0))
+        ).grid(row=0, column=3, rowspan=2, padx=(10, 0))
 
         conteudo = ctk.CTkFrame(
             self,
@@ -323,6 +345,13 @@ class ConversorApp(ctk.CTk):
                 self.imagem_letra, self._selecionar_imagem_letra
             )
 
+            ctk.CTkLabel(
+                self.area_dinamica,
+                text="Inclui automaticamente uma tela final vazia.",
+                text_color=TEXTO_2,
+                font=ctk.CTkFont(size=10),
+            ).grid(row=4, column=0, sticky="w", pady=(8, 0))
+
             ctk.CTkButton(
                 self.area_dinamica,
                 text="Abrir pasta de imagens SLJA",
@@ -332,7 +361,7 @@ class ConversorApp(ctk.CTk):
                 border_color=BORDA,
                 height=36,
                 command=lambda: os.startfile(PASTA_IMAGENS_SLJA)
-            ).grid(row=4, column=0, sticky="w", pady=(8, 0))
+            ).grid(row=5, column=0, sticky="w", pady=(8, 0))
 
     def _campo_imagem(self, linha, titulo, variavel, comando):
         self._rotulo(self.area_dinamica, titulo).grid(
@@ -404,20 +433,33 @@ class ConversorApp(ctk.CTk):
         self._selecionar_imagem(self.imagem_letra, "Imagem dos demais slides (letra)")
 
     def _selecionar_imagem(self, variavel, titulo):
+        pasta_inicial = pasta_inicial_para_arquivo(
+            variavel.get()
+        )
+
         caminho = filedialog.askopenfilename(
             title=titulo,
-            initialdir=PASTA_IMAGENS_SLJA,
+            initialdir=str(pasta_inicial),
             filetypes=[
                 ("Imagens", "*.jpg *.jpeg *.png *.bmp"),
-                ("Todos os arquivos", "*.*")
-            ]
+                ("Todos os arquivos", "*.*"),
+            ],
         )
+
         if caminho:
             variavel.set(caminho)
 
     # ---------- pastas ----------
     def _escolher_saida(self):
-        pasta = filedialog.askdirectory(initialdir=self.pasta_saida.get())
+        pasta_inicial = pasta_inicial_para_diretorio(
+            self.pasta_saida.get()
+        )
+
+        pasta = filedialog.askdirectory(
+            title="Selecionar pasta de saída",
+            initialdir=str(pasta_inicial),
+        )
+
         if pasta:
             self.pasta_saida.set(pasta)
 
@@ -457,12 +499,19 @@ class ConversorApp(ctk.CTk):
                 self.update_idletasks()
                 try:
                     if self.tipo.get() == "PowerPoint":
-                        gerar_pptx(arquivo, destino, modelo)
+                        gerar_pptx(
+                            arquivo,
+                            destino,
+                            modelo,
+                            linhas_por_slide=self.linhas_por_slide,
+                        )
                     else:
                         gerar_slja(
-                            arquivo, destino,
+                            arquivo,
+                            destino,
                             self.imagem_capa.get(),
-                            self.imagem_letra.get()
+                            self.imagem_letra.get(),
+                            linhas_por_slide=self.linhas_por_slide,
                         )
                     sucessos += 1
                 except Exception as exc:
@@ -483,11 +532,164 @@ class ConversorApp(ctk.CTk):
                 f"{sucessos} arquivo(s) convertido(s) com sucesso."
             )
 
+    # ---------- regras de conversão ----------
+    def _texto_linhas(self, quantidade):
+        return "1 linha por slide" if quantidade == 1 else f"{quantidade} linhas por slide"
+
+    def _atualizar_texto_regra(self):
+        self.regra_atual.set(
+            f"Regra atual: {self._texto_linhas(self.linhas_por_slide)}"
+        )
+
+    def _abrir_regras(self, janela_pai=None):
+        janela = ctk.CTkToplevel(self)
+        janela.title("Regras de conversão")
+        janela.geometry("590x500")
+        janela.resizable(False, False)
+        janela.configure(fg_color=FUNDO)
+
+        if janela_pai is not None:
+            janela.transient(janela_pai)
+        else:
+            janela.transient(self)
+
+        janela.grab_set()
+
+        ctk.CTkLabel(
+            janela,
+            text="Regras de conversão",
+            text_color=TEXTO,
+            font=ctk.CTkFont(size=24, weight="bold"),
+        ).pack(anchor="w", padx=26, pady=(24, 4))
+
+        ctk.CTkLabel(
+            janela,
+            text="Defina quantas linhas de uma mesma estrofe entram em cada slide.",
+            text_color=TEXTO_2,
+            font=ctk.CTkFont(size=11),
+        ).pack(anchor="w", padx=26, pady=(0, 18))
+
+        card = ctk.CTkFrame(
+            janela,
+            fg_color=FUNDO_2,
+            border_width=1,
+            border_color=BORDA,
+            corner_radius=16,
+        )
+        card.pack(fill="both", expand=True, padx=26, pady=(0, 18))
+
+        ctk.CTkLabel(
+            card,
+            text="Título",
+            text_color=TEXTO,
+            font=ctk.CTkFont(size=15, weight="bold"),
+        ).pack(anchor="w", padx=20, pady=(20, 4))
+
+        ctk.CTkLabel(
+            card,
+            text="A primeira linha do TXT é sempre o título e vai para o primeiro slide.",
+            text_color=TEXTO_2,
+            wraplength=500,
+            justify="left",
+        ).pack(anchor="w", padx=20, pady=(0, 18))
+
+        ctk.CTkLabel(
+            card,
+            text="Linhas da letra por slide",
+            text_color=TEXTO,
+            font=ctk.CTkFont(size=15, weight="bold"),
+        ).pack(anchor="w", padx=20, pady=(0, 8))
+
+        regra_temp = tk.IntVar(value=self.linhas_por_slide)
+
+        seletor = ctk.CTkSegmentedButton(
+            card,
+            values=["1 linha", "2 linhas", "3 linhas"],
+            fg_color=FUNDO,
+            selected_color=AZUL,
+            selected_hover_color="#0075D6",
+            unselected_color=CARD,
+            unselected_hover_color="#18436F",
+            text_color=TEXTO,
+            height=42,
+            command=lambda valor: regra_temp.set(
+                {"1 linha": 1, "2 linhas": 2, "3 linhas": 3}[valor]
+            ),
+        )
+        seletor.pack(fill="x", padx=20, pady=(0, 18))
+        seletor.set(
+            {1: "1 linha", 2: "2 linhas", 3: "3 linhas"}[
+                self.linhas_por_slide
+            ]
+        )
+
+        ctk.CTkLabel(
+            card,
+            text=(
+                "A divisão sempre reinicia quando começa uma nova estrofe. "
+                "Linhas de estrofes diferentes nunca são colocadas no mesmo slide."
+            ),
+            text_color=TEXTO_2,
+            wraplength=500,
+            justify="left",
+        ).pack(anchor="w", padx=20, pady=(0, 18))
+
+        botoes = ctk.CTkFrame(janela, fg_color="transparent")
+        botoes.pack(fill="x", padx=26, pady=(0, 24))
+
+        def restaurar():
+            regra_temp.set(2)
+            seletor.set("2 linhas")
+
+        def salvar():
+            self.linhas_por_slide = int(regra_temp.get())
+            salvar_configuracoes({
+                "linhas_por_slide": self.linhas_por_slide,
+            })
+            self.configuracoes["linhas_por_slide"] = self.linhas_por_slide
+            self._atualizar_texto_regra()
+            janela.destroy()
+
+        ctk.CTkButton(
+            botoes,
+            text="Restaurar padrão",
+            fg_color="transparent",
+            hover_color=CARD,
+            border_width=1,
+            border_color=BORDA,
+            width=150,
+            height=42,
+            command=restaurar,
+        ).pack(side="left")
+
+        ctk.CTkButton(
+            botoes,
+            text="Cancelar",
+            fg_color="transparent",
+            hover_color=CARD,
+            border_width=1,
+            border_color=BORDA,
+            width=110,
+            height=42,
+            command=janela.destroy,
+        ).pack(side="right")
+
+        ctk.CTkButton(
+            botoes,
+            text="Salvar",
+            fg_color=AZUL,
+            hover_color="#0075D6",
+            width=120,
+            height=42,
+            font=ctk.CTkFont(weight="bold"),
+            command=salvar,
+        ).pack(side="right", padx=(0, 10))
+
     # ---------- configurações ----------
     def _abrir_configuracoes(self):
         janela = ctk.CTkToplevel(self)
         janela.title("Configurações")
-        janela.geometry("620x520")
+        janela.geometry("680x650")
         janela.resizable(False, False)
         janela.configure(fg_color=FUNDO)
         janela.transient(self)
@@ -512,14 +714,29 @@ class ConversorApp(ctk.CTk):
         )
         caixa.pack(fill="both", expand=True, padx=26, pady=(0, 24))
 
-        self._secao_config(caixa, "Modelos", 0)
+        self._secao_config(caixa, "Regras de conversão", 0)
+        ctk.CTkLabel(
+            caixa,
+            textvariable=self.regra_atual,
+            text_color=TEXTO_2,
+        ).grid(row=1, column=0, sticky="w", padx=20)
+
+        ctk.CTkButton(
+            caixa,
+            text="Configurar regras",
+            fg_color=AZUL,
+            hover_color="#0075D6",
+            command=lambda: self._abrir_regras(janela),
+        ).grid(row=2, column=0, sticky="w", padx=20, pady=(10, 14))
+
+        self._secao_config(caixa, "Modelos", 3)
         ctk.CTkButton(
             caixa, text="Abrir pasta de modelos",
             fg_color=CARD, hover_color="#18436F",
             command=lambda: os.startfile(PASTA_MODELOS)
-        ).grid(row=1, column=0, sticky="w", padx=20, pady=(0, 14))
+        ).grid(row=4, column=0, sticky="w", padx=20, pady=(0, 14))
 
-        self._secao_config(caixa, "Atualizações", 2)
+        self._secao_config(caixa, "Atualizações", 5)
         texto_update = (
             "Sistema de atualizações ativo."
             if configurado()
@@ -528,21 +745,21 @@ class ConversorApp(ctk.CTk):
         ctk.CTkLabel(
             caixa, text=texto_update,
             text_color=TEXTO_2
-        ).grid(row=3, column=0, sticky="w", padx=20)
+        ).grid(row=6, column=0, sticky="w", padx=20)
 
         ctk.CTkButton(
             caixa, text="Verificar atualizações",
             fg_color=AZUL, hover_color="#0075D6",
             command=lambda: self._verificar_update(janela)
-        ).grid(row=4, column=0, sticky="w", padx=20, pady=(10, 18))
+        ).grid(row=7, column=0, sticky="w", padx=20, pady=(10, 18))
 
-        self._secao_config(caixa, "Sobre", 5)
+        self._secao_config(caixa, "Sobre", 8)
         ctk.CTkLabel(
             caixa,
             text=f"{NOME_APP}\nVersão {VERSAO}\nGuiaSys Studio",
             justify="left",
             text_color=TEXTO_2
-        ).grid(row=6, column=0, sticky="w", padx=20, pady=(0, 18))
+        ).grid(row=9, column=0, sticky="w", padx=20, pady=(0, 18))
 
     def _secao_config(self, parent, titulo, row):
         ctk.CTkLabel(
@@ -592,7 +809,7 @@ class ConversorApp(ctk.CTk):
         else:
             ctk.CTkLabel(
                 popup,
-                text="Há uma nova versão do Conversor Músicas disponível no GitHub Releases.",
+                text="Há uma nova versão do Conversor Músicas disponível.",
                 text_color=TEXTO_2,
                 wraplength=470,
                 justify="left"

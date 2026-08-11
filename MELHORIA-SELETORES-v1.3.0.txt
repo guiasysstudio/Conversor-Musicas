@@ -1,0 +1,25 @@
+CONVERSOR MÚSICAS v1.3.0 - SELETORES DE PASTA E IMAGEM
+
+PASTA DE SAÍDA
+- O padrão ao iniciar o programa passa a ser a pasta Documentos real do Windows.
+- Se Documentos estiver redirecionado para OneDrive ou outro local,
+  o programa usa o caminho real configurado no sistema.
+- Ao clicar em Selecionar novamente, o seletor abre na pasta que está
+  atualmente configurada no campo Pasta de saída.
+
+Exemplo:
+1. padrão = Documentos;
+2. usuário muda para Imagens;
+3. ao clicar novamente em Selecionar, o navegador abre em Imagens.
+
+IMAGENS DO SLJA
+- Ao selecionar uma imagem pela primeira vez, o navegador abre em Documentos.
+- Depois de escolher uma imagem, o botão Selecionar passa a abrir diretamente
+  na pasta onde essa imagem está.
+
+Isso vale independentemente para:
+- imagem do primeiro slide / título;
+- imagem dos demais slides / letra.
+
+Se o arquivo selecionado tiver sido movido ou apagado, mas a pasta ainda existir,
+o seletor continua abrindo naquela pasta.

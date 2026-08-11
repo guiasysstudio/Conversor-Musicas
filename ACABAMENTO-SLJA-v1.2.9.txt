@@ -1,0 +1,18 @@
+CONVERSOR MÚSICAS v1.2.9 - ACABAMENTO SLJA
+
+Já validado:
+- criação do .slja;
+- imagem da capa;
+- imagem da letra;
+- regras de 1, 2 e 3 linhas.
+
+Ajuste desta versão:
+Os SLJA reais usados como referência terminam com uma última tela
+vazia do tipo LETRA, sem campo letra=, usando a imagem da letra.
+
+A v1.2.9 passa a gerar:
+1. capa / título;
+2. telas da música;
+3. tela final vazia.
+
+Ainda não publicar instalador/Release antes do teste no Louvor JA.

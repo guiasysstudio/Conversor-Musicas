@@ -1,0 +1,35 @@
+CONVERSOR MÚSICAS v1.2.8 - TESTE SLJA
+
+PROBLEMA ENCONTRADO NO ARQUIVO GERADO
+
+O SLJA criado anteriormente continha:
+    imagens/capa.png
+    imagens/letra.png
+
+Porém os arquivos SLJA reais usados como referência possuem entradas internas:
+    imagens\generico_113.jpg
+    imagens\generico_114.jpg
+
+Ou seja, encontramos duas diferenças importantes:
+
+1. Os SLJA reais usam barra invertida '\' nos nomes internos do ZIP.
+2. Os SLJA reais usam imagens JPG.
+
+O arquivo slides.lja gerado já apontava para caminhos com barra invertida.
+Porém dentro do ZIP os arquivos estavam gravados com barra normal '/'.
+Isso fazia o Louvor JA não localizar a imagem indicada.
+
+CORREÇÃO
+
+- As imagens selecionadas são convertidas internamente para JPG.
+- Os nomes dentro do pacote são gravados exatamente como:
+    imagens\capa.jpg
+    imagens\letra.jpg
+- slides.lja continua em Windows-1252 e CRLF.
+- O SLJA continua sem áudio.
+- A regra atual de 1, 2 ou 3 linhas agora também é aplicada ao SLJA.
+
+TESTE
+
+Antes de substituir o projeto inteiro, pode testar também o arquivo:
+    A Melhor Aventura - IMAGENS CORRIGIDAS.slja

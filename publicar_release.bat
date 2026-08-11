@@ -3,9 +3,9 @@ setlocal EnableExtensions
 title Publicar Atualizacao - Conversor Musicas
 cd /d "%~dp0"
 
-set "TAG=v1.2.4"
+set "TAG=v1.3.0"
 set "REPO=guiasysstudio/Conversor-Musicas"
-set "ARQUIVO=installer_output\Conversor-Musicas-Setup v1.2.4.exe"
+set "ARQUIVO=installer_output\Conversor-Musicas-Setup v1.3.0.exe"
 
 echo ==========================================
 echo  Conversor Musicas - Publicar Atualizacao
@@ -27,7 +27,6 @@ if not exist "%ARQUIVO%" (
 where gh.exe >nul 2>nul
 if errorlevel 1 (
     echo ERRO: ferramenta de publicacao nao encontrada.
-    echo.
     pause
     exit /b 1
 )
@@ -35,7 +34,6 @@ if errorlevel 1 (
 gh auth status >nul 2>nul
 if errorlevel 1 (
     echo ERRO: sessao de publicacao nao autenticada.
-    echo.
     pause
     exit /b 1
 )
@@ -43,7 +41,7 @@ if errorlevel 1 (
 gh release view "%TAG%" --repo "%REPO%" >nul 2>nul
 
 if errorlevel 1 (
-    gh release create "%TAG%" "%ARQUIVO%" --repo "%REPO%" --title "Conversor Musicas v1.2.4" --notes "Atualizacao v1.2.4: remove referencias visiveis ao servico de distribuicao, adota instaladores com versao no nome e mantem o fluxo automatico de atualizacao."
+    gh release create "%TAG%" "%ARQUIVO%" --repo "%REPO%" --title "Conversor Musicas v1.3.0" --notes "Versao 1.3.0: modulo PowerPoint validado com modelos reais, regras configuraveis de 1, 2 ou 3 linhas por slide, modulo SLJA sem audio validado com imagens e tela final vazia, seletores de pastas aprimorados e atualizacao automatica."
 ) else (
     gh release upload "%TAG%" "%ARQUIVO%" --clobber --repo "%REPO%"
 )

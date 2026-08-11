@@ -72,3 +72,14 @@ Se `origin` já existir:
 git remote set-url origin https://github.com/guiasysstudio/Conversor-Musicas.git
 git push -u origin main
 ```
+
+
+## Regras de conversão PowerPoint
+
+Em `Configurações > Regras de conversão` é possível selecionar:
+
+- 1 linha por slide
+- 2 linhas por slide (padrão)
+- 3 linhas por slide
+
+A escolha é persistente e a divisão sempre reinicia a cada estrofe.

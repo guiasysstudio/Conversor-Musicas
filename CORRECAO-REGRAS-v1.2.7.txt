@@ -1,0 +1,29 @@
+CONVERSOR MÚSICAS v1.2.7
+
+CORREÇÃO DAS REGRAS DO POWERPOINT
+
+Problema encontrado:
+A interface salvava corretamente 1, 2 ou 3 linhas por slide,
+mas o gerador PowerPoint não recebia esse valor.
+
+Na prática, a função de divisão era chamada sem o parâmetro:
+    montar_blocos_sem_misturar_paragrafos(paragrafos)
+
+Como o valor padrão da função é 2, TODAS as opções acabavam usando
+2 linhas por slide.
+
+Correção:
+Agora o motor recebe explicitamente:
+    linhas_por_slide=linhas_por_slide
+
+Testes incluídos:
+- 1 linha por slide
+- 2 linhas por slide
+- 3 linhas por slide
+- reinício da divisão a cada estrofe
+
+Para testar apenas as regras:
+    .\testar_regras.bat
+
+Para testar o programa:
+    py main.py

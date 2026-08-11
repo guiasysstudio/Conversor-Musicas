@@ -1,0 +1,27 @@
+CONVERSOR MÚSICAS v1.2.5 - CORREÇÃO POWERPOINT
+
+O motor PowerPoint foi refeito usando o mesmo princípio do Gerador PPT Músicas original.
+
+IMPORTANTE
+A apresentação NÃO é mais recriada com python-pptx.
+
+Fluxo atual:
+1. copia o modelo selecionado integralmente para a pasta de saída;
+2. abre essa cópia no Microsoft PowerPoint;
+3. slide 1 usa a caixa chamada caixa_titulo;
+4. slide 2 usa a caixa chamada caixa_letra;
+5. o slide 2 é duplicado dentro do PowerPoint para os demais blocos;
+6. o slide 3 e posteriores do modelo continuam no final;
+7. fundo, slide master, tema, imagens, fontes e formatações são preservados.
+
+REGRAS TXT
+- primeira linha: título;
+- linha em branco: separa estrofe;
+- cada estrofe é dividida em até 2 linhas por slide;
+- estrofes diferentes nunca são misturadas.
+
+MODELO ENVIADO
+O arquivo Modelo Seven1.pptx foi incluído em modelos\powerpoint.
+
+REQUISITO
+Microsoft PowerPoint instalado no Windows.
