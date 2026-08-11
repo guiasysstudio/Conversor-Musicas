@@ -1,49 +1,74 @@
-# Conversor Músicas
+# Conversor Músicas v1.2.1
 
-Programa Windows para conversão em lote de letras em TXT para:
+Conversor Windows para:
 
-- PowerPoint (`.pptx`)
-- SLJA sem áudio (`.slja`)
+- TXT → PowerPoint (`.pptx`)
+- TXT → SLJA sem áudio (`.slja`)
 
-## Regra do TXT
+## GitHub oficial
 
-- Primeira linha: título da música.
-- Restante: letra.
-- Linha em branco: separa estrofes.
-- Cada estrofe é dividida em blocos de até 2 linhas.
+Repositório:
 
-Exemplo com 5 linhas:
-- slide/tela 1 = linhas 1 e 2
-- slide/tela 2 = linhas 3 e 4
-- slide/tela 3 = linha 5
+`guiasysstudio/Conversor-Musicas`
 
-## PowerPoint
+## Atualização automática
 
-Os modelos ficam em:
+O programa verifica automaticamente o **GitHub Releases** aproximadamente 1,4 segundo após abrir.
 
-`modelos/powerpoint`
+Se houver uma versão superior à instalada, aparece automaticamente um popup com:
 
-O seletor do programa carrega automaticamente todos os arquivos `.pptx` dessa pasta.
+- **Atualizar**
+- **Cancelar**
 
-Cada modelo deve ter pelo menos:
-- slide 1: modelo de capa/título
-- slide 2: modelo da letra
+Ao escolher **Atualizar**:
 
-## SLJA
+1. o instalador `.exe` anexado à Release é baixado;
+2. o progresso é exibido;
+3. o programa pede confirmação;
+4. abre o instalador;
+5. fecha a versão antiga.
 
-Ao escolher `SLJA sem áudio (.slja)`, o seletor de modelo PowerPoint desaparece.
+O atualizador procura preferencialmente pelo asset:
 
-No lugar dele aparecem:
-- Imagem do primeiro slide (título)
-- Imagem dos demais slides (letra)
+`Conversor-Musicas-Setup.exe`
 
-O programa cria o `.slja` sem áudio, com `slides.lja`, pasta `imagens` e pasta `audio`.
+Se esse nome não existir, ele procura outro `.exe` que contenha `setup`, `installer` ou `instalador`.
+
+### Tags das Releases
+
+Use tags de versão, por exemplo:
+
+- `v1.2.1`
+- `v1.2.2`
+- `v1.3.0`
+
+A versão interna fica em:
+
+`src/versao.py`
 
 ## Executar
-
-No terminal do VS Code:
 
 ```powershell
 py -m pip install -r requirements.txt
 py main.py
+```
+
+## Primeiro envio ao GitHub pelo VS Code
+
+Na pasta do projeto:
+
+```powershell
+git init
+git add .
+git commit -m "feat: cria Conversor Músicas v1.2.1"
+git branch -M main
+git remote add origin https://github.com/guiasysstudio/Conversor-Musicas.git
+git push -u origin main
+```
+
+Se `origin` já existir:
+
+```powershell
+git remote set-url origin https://github.com/guiasysstudio/Conversor-Musicas.git
+git push -u origin main
 ```
