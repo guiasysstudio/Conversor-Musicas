@@ -1,0 +1,27 @@
+CORREÇÃO v1.2.2
+
+Problema corrigido:
+O programa instalado em C:\Program Files\Conversor Músicas tentava criar pastas
+dentro de Program Files e recebia "Acesso negado".
+
+Também havia um segundo problema: os assets empacotados pelo PyInstaller ficam
+dentro da pasta interna do bundle, mas o programa procurava assets ao lado do EXE.
+
+Correções:
+1. Assets (logo etc.) são lidos da área interna do PyInstaller.
+2. O programa só cria pastas editáveis: modelos e saída.
+3. O instalador agora usa:
+   %LOCALAPPDATA%\Programs\Conversor Músicas
+   que é gravável pelo usuário.
+4. A pasta modelos continua dentro da raiz do programa, como definido no projeto.
+5. O instalador não precisa mais de privilégios administrativos.
+6. Modelos existentes não são sobrescritos durante atualização.
+
+PARA TESTAR:
+1. Desinstale a versão instalada em Program Files.
+2. Extraia este projeto sobre a pasta do projeto no VS Code.
+3. Rode:
+   .\gerar_instalador.bat
+4. Instale:
+   installer_output\Conversor-Musicas-Setup.exe
+5. Abra o programa normalmente.

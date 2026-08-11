@@ -4,7 +4,7 @@ title Instalador - Conversor Musicas
 cd /d "%~dp0"
 
 echo ==========================================
-echo  Conversor Musicas - Instalador v1.2.1
+echo  Conversor Musicas - Instalador v1.2.2
 echo ==========================================
 echo.
 

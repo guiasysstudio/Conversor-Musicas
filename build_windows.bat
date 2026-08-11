@@ -26,7 +26,6 @@ py -m PyInstaller --clean --noconfirm --windowed ^
   --name ConversorMusicas ^
   --icon "assets\app_icon.ico" ^
   --collect-all customtkinter ^
-  --add-data "modelos;modelos" ^
   --add-data "assets;assets" ^
   main.py
 
@@ -36,6 +35,12 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
+
+echo.
+echo Copiando modelos editaveis para a raiz do programa...
+xcopy "modelos" "dist\ConversorMusicas\modelos\" /E /I /Y >nul
+
+if not exist "dist\ConversorMusicas\saida" mkdir "dist\ConversorMusicas\saida"
 
 echo.
 echo Programa gerado em:

@@ -3,7 +3,7 @@ chcp 65001 >nul
 title Publicar Release - Conversor Musicas
 cd /d "%~dp0"
 
-set "TAG=v1.2.1"
+set "TAG=v1.2.2"
 set "ARQUIVO=installer_output\Conversor-Musicas-Setup.exe"
 
 if not exist "%ARQUIVO%" (
@@ -31,17 +31,17 @@ if errorlevel 1 (
 echo.
 echo Publicando Release %TAG%...
 
-gh release view "%TAG%" >nul 2>nul
+gh release view "%TAG%" --repo guiasysstudio/Conversor-Musicas >nul 2>nul
 if not errorlevel 1 (
     echo.
     echo A Release %TAG% ja existe.
     echo Enviando/atualizando o instalador...
-    gh release upload "%TAG%" "%ARQUIVO%" --clobber
+    gh release upload "%TAG%" "%ARQUIVO%" --clobber --repo guiasysstudio/Conversor-Musicas
 ) else (
     gh release create "%TAG%" "%ARQUIVO%" ^
       --repo guiasysstudio/Conversor-Musicas ^
-      --title "Conversor Músicas v1.2.1" ^
-      --notes "Primeira Release pública do Conversor Músicas. Conversão TXT para PowerPoint e SLJA sem áudio, interface moderna e base de atualização automática via GitHub Releases."
+      --title "Conversor Músicas v1.2.2" ^
+      --notes "Corrige o erro de permissão ao iniciar o programa instalado. O Conversor Músicas agora é instalado por usuário em LocalAppData, mantendo as pastas editáveis de modelos e saída dentro da raiz do programa."
 )
 
 if errorlevel 1 (
