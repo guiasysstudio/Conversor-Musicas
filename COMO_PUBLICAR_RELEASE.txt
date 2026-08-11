@@ -1,0 +1,27 @@
+CONVERSOR MÚSICAS - PRIMEIRA RELEASE
+
+1. Abra o projeto no VS Code.
+
+2. Gere o instalador:
+   .\gerar_instalador.bat
+
+3. Confirme que foi criado:
+   installer_output\Conversor-Musicas-Setup.exe
+
+4. Envie as mudanças para o GitHub:
+   git add .
+   git commit -m "build: prepara instalador e primeira release"
+   git push
+
+5. Publique a Release:
+   .\publicar_release.bat
+
+A Release será criada como:
+v1.2.1
+
+O atualizador automático do programa usa o GitHub Releases e procura o arquivo:
+Conversor-Musicas-Setup.exe
+
+IMPORTANTE:
+A versão instalada v1.2.1 NÃO mostrará popup ao encontrar a Release v1.2.1.
+O popup aparecerá quando uma Release superior existir, por exemplo v1.2.2.

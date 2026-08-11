@@ -1,28 +1,58 @@
 @echo off
 chcp 65001 >nul
-setlocal
+title Instalador - Conversor Musicas
 cd /d "%~dp0"
+
+echo ==========================================
+echo  Conversor Musicas - Instalador v1.2.1
+echo ==========================================
+echo.
 
 call build_windows.bat
 if errorlevel 1 exit /b 1
 
-set "ISCC="
-if exist "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" set "ISCC=C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-if exist "C:\Program Files\Inno Setup 6\ISCC.exe" set "ISCC=C:\Program Files\Inno Setup 6\ISCC.exe"
+if exist installer_output rmdir /s /q installer_output
 
-if not defined ISCC (
-  echo Inno Setup 6 nao encontrado.
-  pause
-  exit /b 1
+set "ISCC="
+
+if exist "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" (
+    set "ISCC=C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
 )
 
-"%ISCC%" "instalador\ConversorMusicas.iss"
-if errorlevel 1 (
-  echo Erro ao gerar instalador.
-  pause
-  exit /b 1
+if not defined ISCC if exist "C:\Program Files\Inno Setup 6\ISCC.exe" (
+    set "ISCC=C:\Program Files\Inno Setup 6\ISCC.exe"
+)
+
+if not defined ISCC (
+    where ISCC.exe >nul 2>nul
+    if not errorlevel 1 set "ISCC=ISCC.exe"
+)
+
+if not defined ISCC (
+    echo.
+    echo ERRO: Inno Setup 6 nao encontrado.
+    echo Instale o Inno Setup e tente novamente.
+    pause
+    exit /b 1
 )
 
 echo.
-echo Instalador criado em installer_output\ConversorMusicas_Setup_1.0.0.exe
+echo Gerando Setup...
+"%ISCC%" "ConversorMusicas.iss"
+
+if errorlevel 1 (
+    echo.
+    echo ERRO ao gerar o instalador.
+    pause
+    exit /b 1
+)
+
+echo.
+echo ==========================================
+echo  CONCLUIDO
+echo ==========================================
+echo.
+echo Instalador:
+echo installer_output\Conversor-Musicas-Setup.exe
+echo.
 pause
