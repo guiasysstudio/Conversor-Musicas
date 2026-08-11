@@ -1,18 +1,32 @@
 @echo off
-chcp 65001 >nul
-title Publicar Release - Conversor Musicas
+setlocal EnableExtensions
+title Publicar Atualizacao - Conversor Musicas
 cd /d "%~dp0"
 
-set "TAG=v1.2.3"
-set "ARQUIVO=installer_output\Conversor-Musicas-Setup.exe"
+set "TAG=v1.2.4"
+set "REPO=guiasysstudio/Conversor-Musicas"
+set "ARQUIVO=installer_output\Conversor-Musicas-Setup v1.2.4.exe"
+
+echo ==========================================
+echo  Conversor Musicas - Publicar Atualizacao
+echo  Versao: %TAG%
+echo ==========================================
+echo.
 
 if not exist "%ARQUIVO%" (
-    echo.
-    echo ERRO: Instalador nao encontrado:
-    echo %ARQUIVO%
+    echo ERRO: instalador nao encontrado:
+    echo %CD%\%ARQUIVO%
     echo.
     echo Execute primeiro:
-    echo gerar_instalador.bat
+    echo   gerar_instalador.bat
+    echo.
+    pause
+    exit /b 1
+)
+
+where gh.exe >nul 2>nul
+if errorlevel 1 (
+    echo ERRO: ferramenta de publicacao nao encontrada.
     echo.
     pause
     exit /b 1
@@ -20,39 +34,29 @@ if not exist "%ARQUIVO%" (
 
 gh auth status >nul 2>nul
 if errorlevel 1 (
-    echo.
-    echo ERRO: GitHub CLI nao esta autenticado.
-    echo Execute: gh auth login
+    echo ERRO: sessao de publicacao nao autenticada.
     echo.
     pause
     exit /b 1
 )
 
-echo.
-echo Publicando Release %TAG%...
+gh release view "%TAG%" --repo "%REPO%" >nul 2>nul
 
-gh release view "%TAG%" --repo guiasysstudio/Conversor-Musicas >nul 2>nul
-if not errorlevel 1 (
-    echo.
-    echo A Release %TAG% ja existe.
-    echo Enviando/atualizando o instalador...
-    gh release upload "%TAG%" "%ARQUIVO%" --clobber --repo guiasysstudio/Conversor-Musicas
+if errorlevel 1 (
+    gh release create "%TAG%" "%ARQUIVO%" --repo "%REPO%" --title "Conversor Musicas v1.2.4" --notes "Atualizacao v1.2.4: remove referencias visiveis ao servico de distribuicao, adota instaladores com versao no nome e mantem o fluxo automatico de atualizacao."
 ) else (
-    gh release create "%TAG%" "%ARQUIVO%" ^
-      --repo guiasysstudio/Conversor-Musicas ^
-      --title "Conversor Músicas v1.2.3" ^
-      --notes "Atualiza o instalador para detectar automaticamente instalações existentes, reutilizar qualquer diretório escolhido anteriormente e ocultar a seleção de diretório durante atualizações. Também preserva os modelos personalizados do usuário."
+    gh release upload "%TAG%" "%ARQUIVO%" --clobber --repo "%REPO%"
 )
 
 if errorlevel 1 (
     echo.
-    echo ERRO ao publicar a Release.
+    echo ERRO ao publicar a atualizacao.
     pause
     exit /b 1
 )
 
 echo.
-echo Release publicada com sucesso.
-echo https://github.com/guiasysstudio/Conversor-Musicas/releases/tag/%TAG%
+echo Atualizacao %TAG% publicada com sucesso.
 echo.
 pause
+endlocal

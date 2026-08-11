@@ -1,5 +1,5 @@
-VERSAO = "1.2.3"
+VERSAO = "1.2.4"
 NOME_APP = "Conversor Músicas"
 GITHUB_OWNER = "guiasysstudio"
 GITHUB_REPO = "Conversor-Musicas"
-NOME_ASSET_INSTALADOR = "Conversor-Musicas-Setup.exe"
+NOME_ASSET_INSTALADOR = ""

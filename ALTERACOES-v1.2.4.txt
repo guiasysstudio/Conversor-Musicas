@@ -1,0 +1,9 @@
+Conversor Músicas v1.2.4
+
+- Remove menções visíveis ao serviço/repositório de atualizações.
+- Configurações passa a mostrar apenas: Sistema de atualizações ativo.
+- Instaladores passam a usar o padrão:
+  Conversor-Musicas-Setup vX.Y.Z.exe
+- O atualizador identifica automaticamente o instalador da nova versão.
+- Mantém o mesmo diretório durante atualizações.
+- Preserva modelos personalizados.

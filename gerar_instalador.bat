@@ -1,10 +1,10 @@
 @echo off
-chcp 65001 >nul
+setlocal EnableExtensions
 title Instalador - Conversor Musicas
 cd /d "%~dp0"
 
 echo ==========================================
-echo  Conversor Musicas - Instalador v1.2.3
+echo  Conversor Musicas - Instalador v1.2.4
 echo ==========================================
 echo.
 
@@ -29,15 +29,13 @@ if not defined ISCC (
 )
 
 if not defined ISCC (
-    echo.
     echo ERRO: Inno Setup 6 nao encontrado.
-    echo Instale o Inno Setup e tente novamente.
     pause
     exit /b 1
 )
 
 echo.
-echo Gerando Setup...
+echo Gerando instalador...
 "%ISCC%" "ConversorMusicas.iss"
 
 if errorlevel 1 (
@@ -52,7 +50,7 @@ echo ==========================================
 echo  CONCLUIDO
 echo ==========================================
 echo.
-echo Instalador:
-echo installer_output\Conversor-Musicas-Setup.exe
+echo installer_output\Conversor-Musicas-Setup v1.2.4.exe
 echo.
 pause
+endlocal

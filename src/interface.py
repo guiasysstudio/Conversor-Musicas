@@ -521,9 +521,9 @@ class ConversorApp(ctk.CTk):
 
         self._secao_config(caixa, "Atualizações", 2)
         texto_update = (
-            "GitHub Releases configurado."
+            "Sistema de atualizações ativo."
             if configurado()
-            else "Aguardando configuração do repositório GitHub."
+            else "Sistema de atualizações ainda não configurado."
         )
         ctk.CTkLabel(
             caixa, text=texto_update,
@@ -631,14 +631,14 @@ class ConversorApp(ctk.CTk):
             if info.get("pagina"):
                 if messagebox.askyesno(
                     "Atualização",
-                    "A nova versão foi encontrada, mas a Release não possui um instalador .exe.\n\n"
-                    "Deseja abrir a página da Release?"
+                    "A nova versão foi encontrada, mas não há um instalador compatível disponível.\n\n"
+                    "Deseja abrir a página de atualização?"
                 ):
                     webbrowser.open(info["pagina"])
             else:
                 messagebox.showwarning(
                     "Atualização",
-                    "A Release não possui um instalador .exe disponível para download."
+                    "Não há um instalador compatível disponível para download."
                 )
             return
 
@@ -738,12 +738,12 @@ class ConversorApp(ctk.CTk):
                     elif info.get("sem_release"):
                         messagebox.showinfo(
                             "Atualizações",
-                            "O repositório está configurado, mas ainda não existe nenhuma Release publicada."
+                            "O sistema de atualizações está ativo, mas ainda não existe nenhuma atualização publicada."
                         )
                     elif not info.get("configurado"):
                         messagebox.showinfo(
                             "Atualizações",
-                            "O repositório GitHub ainda não está configurado."
+                            "O sistema de atualizações ainda não está configurado."
                         )
                     else:
                         messagebox.showinfo(
