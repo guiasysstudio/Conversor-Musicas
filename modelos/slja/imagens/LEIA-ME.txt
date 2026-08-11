@@ -1,0 +1,3 @@
+Coloque nesta pasta as imagens que deseja usar nos arquivos SLJA.
+No programa você escolherá uma imagem para o primeiro slide (título)
+e outra para os demais slides (letra).

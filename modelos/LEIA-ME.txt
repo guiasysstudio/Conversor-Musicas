@@ -1,0 +1,17 @@
+PASTA DE MODELOS - CONVERSOR MÚSICAS
+
+Esta pasta fica na raiz do programa e não deve ser movida.
+
+PowerPoint:
+- Coloque modelos .pptx em modelos\powerpoint\
+- O modelo precisa conter:
+  Slide 1: caixa de texto chamada "caixa_titulo"
+  Slide 2: caixa de texto chamada "caixa_letra"
+- Um terceiro slide vazio pode ser usado como encerramento.
+
+SLJA:
+- Cada modelo fica em uma subpasta dentro de modelos\slja\
+- Exemplo: modelos\slja\padrao\
+- A subpasta deve conter exatamente:
+  capa.jpg
+  letra.jpg

@@ -1,0 +1,10 @@
+Título da Música
+Primeira linha da primeira estrofe
+Segunda linha da primeira estrofe
+Terceira linha da primeira estrofe
+Quarta linha da primeira estrofe
+Quinta linha da primeira estrofe
+
+Primeira linha da segunda estrofe
+Segunda linha da segunda estrofe
+Terceira linha da segunda estrofe
