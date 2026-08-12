@@ -1,0 +1,35 @@
+CONVERSOR MÚSICAS v1.3.1 - TESTE
+
+REGRAS INDIVIDUAIS POR MÚSICA
+
+Cada TXT agora possui a coluna "Regra" com quatro opções:
+-  = segue a regra padrão configurada no programa
+1  = força 1 linha por slide nessa música
+2  = força 2 linhas por slide nessa música
+3  = força 3 linhas por slide nessa música
+
+Exemplo com padrão geral em 2:
+Música A  -  -> 2 linhas
+Música B  1  -> 1 linha
+Música C  3  -> 3 linhas
+
+Se depois o padrão geral mudar para 3, somente as músicas com "-"
+passam a seguir 3.
+
+APLICAÇÃO EM LOTE
+
+Cada linha possui uma caixa de seleção.
+É possível marcar várias músicas e usar:
+"Regra dos selecionados" -> -, 1, 2 ou 3 -> Aplicar.
+
+Também foi incluído "Remover" para excluir da fila somente as músicas
+marcadas.
+
+ROLAGEM
+
+A antiga caixa de texto foi substituída por uma lista rolável.
+Quando houver mais músicas do que cabem no card, a barra de rolagem
+fica disponível automaticamente.
+
+A mesma regra individual é respeitada tanto pelo PowerPoint quanto
+pelo SLJA.

@@ -4,7 +4,7 @@ title Build - Conversor Musicas
 cd /d "%~dp0"
 
 echo ==========================================
-echo  Conversor Musicas - Build v1.3.0
+echo  Conversor Musicas - Build v1.3.1
 echo ==========================================
 echo.
 

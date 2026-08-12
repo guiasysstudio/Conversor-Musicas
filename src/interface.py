@@ -54,6 +54,10 @@ class ConversorApp(ctk.CTk):
         self.configure(fg_color=FUNDO)
 
         self.arquivos = []
+        # Regra individual por arquivo:
+        # "-" = segue a regra padrão do programa.
+        self.regras_arquivo = {}
+        self.selecao_arquivo = {}
         self.tipo = tk.StringVar(value="PowerPoint")
         self.modelo = tk.StringVar()
         self.pasta_saida = tk.StringVar(value=str(pasta_documentos()))
@@ -167,11 +171,11 @@ class ConversorApp(ctk.CTk):
         # Esquerda: arquivos
         arquivos_card = self._card(conteudo, "Arquivos TXT", "Selecione uma ou várias músicas")
         arquivos_card.grid(row=1, column=0, sticky="nsew", padx=(22, 10), pady=(0, 22))
-        arquivos_card.grid_rowconfigure(3, weight=1)
+        arquivos_card.grid_rowconfigure(4, weight=1)
         arquivos_card.grid_columnconfigure(0, weight=1)
 
         botoes = ctk.CTkFrame(arquivos_card, fg_color="transparent")
-        botoes.grid(row=2, column=0, sticky="ew", padx=18, pady=(4, 12))
+        botoes.grid(row=2, column=0, sticky="ew", padx=18, pady=(4, 10))
 
         ctk.CTkButton(
             botoes, text="+ Selecionar TXT",
@@ -189,17 +193,108 @@ class ConversorApp(ctk.CTk):
             command=self._limpar
         ).pack(side="left", padx=(10, 0))
 
-        self.lista = ctk.CTkTextbox(
+        # Cabeçalho da lista.
+        cab_lista = ctk.CTkFrame(arquivos_card, fg_color="transparent")
+        cab_lista.grid(row=3, column=0, sticky="ew", padx=18, pady=(0, 5))
+        cab_lista.grid_columnconfigure(1, weight=1)
+
+        self.var_todos = tk.BooleanVar(value=False)
+        self.chk_todos = ctk.CTkCheckBox(
+            cab_lista,
+            text="",
+            variable=self.var_todos,
+            width=26,
+            checkbox_width=18,
+            checkbox_height=18,
+            fg_color=AZUL,
+            hover_color="#0075D6",
+            command=self._marcar_todos,
+        )
+        self.chk_todos.grid(row=0, column=0, sticky="w", padx=(2, 7))
+
+        ctk.CTkLabel(
+            cab_lista,
+            text="Arquivo",
+            text_color=TEXTO_2,
+            font=ctk.CTkFont(size=10, weight="bold"),
+        ).grid(row=0, column=1, sticky="w")
+
+        ctk.CTkLabel(
+            cab_lista,
+            text="Regra",
+            width=66,
+            text_color=TEXTO_2,
+            font=ctk.CTkFont(size=10, weight="bold"),
+        ).grid(row=0, column=2, sticky="e", padx=(8, 3))
+
+        # Área rolável. Quando a quantidade ultrapassar a altura do card,
+        # a barra de rolagem aparece automaticamente.
+        self.lista_scroll = ctk.CTkScrollableFrame(
             arquivos_card,
             fg_color=FUNDO,
-            text_color=TEXTO,
             border_width=1,
             border_color=BORDA,
             corner_radius=12,
-            font=("Consolas", 12)
+            scrollbar_button_color=CARD,
+            scrollbar_button_hover_color=AZUL,
         )
-        self.lista.grid(row=3, column=0, sticky="nsew", padx=18, pady=(0, 18))
-        self.lista.configure(state="disabled")
+        self.lista_scroll.grid(
+            row=4, column=0, sticky="nsew",
+            padx=18, pady=(0, 10)
+        )
+        self.lista_scroll.grid_columnconfigure(0, weight=1)
+
+        # Aplicação em lote das regras.
+        lote = ctk.CTkFrame(arquivos_card, fg_color="transparent")
+        lote.grid(row=5, column=0, sticky="ew", padx=18, pady=(0, 16))
+        lote.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            lote,
+            text='Regra dos selecionados  ("-" = padrão)',
+            text_color=TEXTO_2,
+            font=ctk.CTkFont(size=10),
+        ).grid(row=0, column=0, sticky="w")
+
+        self.regra_lote = tk.StringVar(value="-")
+        self.combo_regra_lote = ctk.CTkComboBox(
+            lote,
+            variable=self.regra_lote,
+            values=["-", "1", "2", "3"],
+            width=72,
+            height=34,
+            state="readonly",
+            fg_color=FUNDO,
+            border_color=BORDA,
+            button_color=AZUL,
+            button_hover_color="#0075D6",
+            text_color=TEXTO,
+        )
+        self.combo_regra_lote.grid(row=0, column=1, padx=(8, 6))
+
+        ctk.CTkButton(
+            lote,
+            text="Aplicar",
+            width=72,
+            height=34,
+            fg_color=CARD,
+            hover_color="#18436F",
+            border_width=1,
+            border_color=BORDA,
+            command=self._aplicar_regra_selecionados,
+        ).grid(row=0, column=2)
+
+        ctk.CTkButton(
+            lote,
+            text="Remover",
+            width=76,
+            height=34,
+            fg_color="transparent",
+            hover_color="#5A1F2A",
+            border_width=1,
+            border_color=BORDA,
+            command=self._remover_selecionados,
+        ).grid(row=0, column=3, padx=(6, 0))
 
         # Direita: configuração
         config_card = self._card(conteudo, "Configuração", "Opções da conversão selecionada")
@@ -396,22 +491,174 @@ class ConversorApp(ctk.CTk):
         for arq in arquivos:
             if arq not in self.arquivos:
                 self.arquivos.append(arq)
+                self.regras_arquivo[arq] = "-"
+                self.selecao_arquivo[arq] = tk.BooleanVar(value=False)
+
+        self._atualizar_lista()
+
+    def _alterar_regra_arquivo(self, arquivo, valor):
+        if valor not in ("-", "1", "2", "3"):
+            valor = "-"
+        self.regras_arquivo[arquivo] = valor
+
+    def _regra_efetiva_arquivo(self, arquivo):
+        valor = self.regras_arquivo.get(arquivo, "-")
+        if valor == "-":
+            return self.linhas_por_slide
+        return int(valor)
+
+    def _marcar_todos(self):
+        marcado = bool(self.var_todos.get())
+        for arquivo in self.arquivos:
+            var = self.selecao_arquivo.get(arquivo)
+            if var is not None:
+                var.set(marcado)
+
+    def _aplicar_regra_selecionados(self):
+        selecionados = [
+            arquivo
+            for arquivo in self.arquivos
+            if self.selecao_arquivo.get(arquivo) is not None
+            and self.selecao_arquivo[arquivo].get()
+        ]
+
+        if not selecionados:
+            messagebox.showwarning(
+                NOME_APP,
+                "Marque pelo menos uma música para aplicar a regra."
+            )
+            return
+
+        regra = self.regra_lote.get()
+        if regra not in ("-", "1", "2", "3"):
+            regra = "-"
+
+        for arquivo in selecionados:
+            self.regras_arquivo[arquivo] = regra
+
+        self._atualizar_lista()
+        self.status.set(
+            f"Regra {regra} aplicada a {len(selecionados)} arquivo(s)."
+            if regra != "-"
+            else f"{len(selecionados)} arquivo(s) voltaram a seguir a regra padrão."
+        )
+
+    def _remover_selecionados(self):
+        selecionados = [
+            arquivo
+            for arquivo in self.arquivos
+            if self.selecao_arquivo.get(arquivo) is not None
+            and self.selecao_arquivo[arquivo].get()
+        ]
+
+        if not selecionados:
+            messagebox.showwarning(
+                NOME_APP,
+                "Marque pelo menos uma música para remover."
+            )
+            return
+
+        remover = set(selecionados)
+        self.arquivos = [
+            arquivo for arquivo in self.arquivos
+            if arquivo not in remover
+        ]
+
+        for arquivo in selecionados:
+            self.regras_arquivo.pop(arquivo, None)
+            self.selecao_arquivo.pop(arquivo, None)
 
         self._atualizar_lista()
 
     def _atualizar_lista(self):
-        self.lista.configure(state="normal")
-        self.lista.delete("1.0", "end")
-        for i, arq in enumerate(self.arquivos, 1):
-            self.lista.insert("end", f"{i:02d}. {Path(arq).name}\n")
-        self.lista.configure(state="disabled")
+        # Recria somente as linhas visuais, mantendo as regras em memória.
+        for widget in self.lista_scroll.winfo_children():
+            widget.destroy()
+
+        for i, arquivo in enumerate(self.arquivos, 1):
+            linha = ctk.CTkFrame(
+                self.lista_scroll,
+                fg_color=FUNDO_2 if i % 2 == 0 else "transparent",
+                corner_radius=8,
+            )
+            linha.grid(
+                row=i - 1,
+                column=0,
+                sticky="ew",
+                padx=4,
+                pady=2,
+            )
+            linha.grid_columnconfigure(1, weight=1)
+
+            var_sel = self.selecao_arquivo.setdefault(
+                arquivo,
+                tk.BooleanVar(value=False),
+            )
+
+            ctk.CTkCheckBox(
+                linha,
+                text="",
+                variable=var_sel,
+                width=26,
+                checkbox_width=18,
+                checkbox_height=18,
+                fg_color=AZUL,
+                hover_color="#0075D6",
+            ).grid(row=0, column=0, padx=(7, 5), pady=7)
+
+            ctk.CTkLabel(
+                linha,
+                text=f"{i:02d}. {Path(arquivo).name}",
+                text_color=TEXTO,
+                anchor="w",
+                font=ctk.CTkFont(size=11),
+            ).grid(
+                row=0, column=1,
+                sticky="ew",
+                padx=(0, 8),
+                pady=7,
+            )
+
+            regra_var = tk.StringVar(
+                value=self.regras_arquivo.get(arquivo, "-")
+            )
+            combo = ctk.CTkComboBox(
+                linha,
+                variable=regra_var,
+                values=["-", "1", "2", "3"],
+                width=64,
+                height=30,
+                state="readonly",
+                fg_color=FUNDO,
+                border_color=BORDA,
+                button_color=AZUL,
+                button_hover_color="#0075D6",
+                text_color=TEXTO,
+                command=lambda valor, arq=arquivo:
+                    self._alterar_regra_arquivo(arq, valor),
+            )
+            combo.grid(
+                row=0, column=2,
+                padx=(0, 7),
+                pady=5,
+            )
+
+        if hasattr(self, "var_todos"):
+            self.var_todos.set(False)
+
         self.status.set(f"{len(self.arquivos)} arquivo(s) selecionado(s).")
         self.btn_converter.configure(
-            text=f"Converter {len(self.arquivos)} arquivo(s)" if self.arquivos else "Converter arquivos"
+            text=(
+                f"Converter {len(self.arquivos)} arquivo(s)"
+                if self.arquivos
+                else "Converter arquivos"
+            )
         )
 
     def _limpar(self):
         self.arquivos.clear()
+        self.regras_arquivo.clear()
+        self.selecao_arquivo.clear()
         self._atualizar_lista()
         self.status.set("Pronto para converter.")
 
@@ -495,15 +742,21 @@ class ConversorApp(ctk.CTk):
 
         try:
             for indice, arquivo in enumerate(self.arquivos, 1):
-                self.status.set(f"Convertendo {indice} de {len(self.arquivos)}...")
+                regra_arquivo = self._regra_efetiva_arquivo(arquivo)
+
+                self.status.set(
+                    f"Convertendo {indice} de {len(self.arquivos)} "
+                    f"• regra {regra_arquivo}..."
+                )
                 self.update_idletasks()
+
                 try:
                     if self.tipo.get() == "PowerPoint":
                         gerar_pptx(
                             arquivo,
                             destino,
                             modelo,
-                            linhas_por_slide=self.linhas_por_slide,
+                            linhas_por_slide=regra_arquivo,
                         )
                     else:
                         gerar_slja(
@@ -511,7 +764,7 @@ class ConversorApp(ctk.CTk):
                             destino,
                             self.imagem_capa.get(),
                             self.imagem_letra.get(),
-                            linhas_por_slide=self.linhas_por_slide,
+                            linhas_por_slide=regra_arquivo,
                         )
                     sucessos += 1
                 except Exception as exc:

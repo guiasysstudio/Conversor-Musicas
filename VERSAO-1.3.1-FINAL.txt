@@ -1,0 +1,45 @@
+CONVERSOR MÚSICAS v1.3.1 - VERSÃO FINAL VALIDADA
+
+POWERPOINT
+- Conversão TXT -> PPTX validada com modelos reais.
+- Microsoft PowerPoint via COM/pywin32.
+- Preserva tema, fundo, imagens, fontes e formatação.
+- Regras de 1, 2 ou 3 linhas por slide.
+- Nunca mistura estrofes diferentes no mesmo slide.
+
+SLJA
+- Conversão TXT -> SLJA sem áudio validada no Louvor JA.
+- Imagem própria para capa e para letras.
+- Imagens internas compatíveis em JPG.
+- Regras de 1, 2 ou 3 linhas por tela.
+- Tela final vazia validada.
+
+REGRAS POR MÚSICA
+- Cada TXT possui regra individual:
+  - = segue o padrão do programa
+  1 = 1 linha
+  2 = 2 linhas
+  3 = 3 linhas
+- É possível selecionar várias músicas e aplicar uma regra em lote.
+- A regra individual funciona tanto no PowerPoint quanto no SLJA.
+
+LISTA DE ARQUIVOS
+- Lista com rolagem automática.
+- Checkbox por música.
+- Selecionar todos.
+- Aplicar regra aos selecionados.
+- Remover somente os selecionados.
+
+PASTAS E IMAGENS
+- Pasta padrão de saída = Documentos.
+- Ao selecionar novamente uma pasta, abre no caminho atual.
+- Ao selecionar novamente uma imagem, abre na pasta da imagem atual.
+
+INSTALAÇÃO / ATUALIZAÇÃO
+- AppId permanente:
+  {B17181A7-C736-4A0A-9D36-821F70A96C51}
+- Primeira instalação permite escolher diretório.
+- Atualizações reutilizam automaticamente o diretório anterior.
+- Modelos personalizados são preservados.
+- Nome do instalador:
+  Conversor-Musicas-Setup v1.3.1.exe
