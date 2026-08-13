@@ -17,6 +17,10 @@ from .leitor_txt import (
 
 NOME_CAIXA_TITULO = "caixa_titulo"
 NOME_CAIXA_LETRA = "caixa_letra"
+NOME_FUNDO_LETRA = "fundo_letra"
+
+# Espaço extra acima e abaixo do texto, em pontos do PowerPoint.
+MARGEM_VERTICAL_FUNDO_LETRA = 12
 
 
 def obter_shape_por_nome(slide, nome_shape):
@@ -117,6 +121,141 @@ def preparar_caixa_letra(shape, left, width, height, altura_slide):
         pass
 
     alinhar_shape_ao_meio_vertical_do_slide(shape, altura_slide)
+
+
+
+def _limites_verticais_texto(shape):
+    """
+    Retorna (top, height) do texto efetivamente renderizado no slide.
+
+    O objetivo é ajustar um retângulo de fundo ao conteúdo real da letra,
+    e não ao tamanho fixo da caixa de texto.
+    """
+    tentativas = []
+
+    try:
+        tentativas.append(shape.TextFrame2.TextRange)
+    except Exception:
+        pass
+
+    try:
+        tentativas.append(shape.TextFrame.TextRange)
+    except Exception:
+        pass
+
+    for text_range in tentativas:
+        try:
+            top = float(text_range.BoundTop)
+            height = float(text_range.BoundHeight)
+
+            if height > 0:
+                return top, height
+        except Exception:
+            pass
+
+    return None
+
+
+def _caixa_tem_preenchimento_visivel(shape):
+    """
+    Retorna True somente quando a própria caixa_letra possui
+    preenchimento de forma visível no modelo.
+    """
+    try:
+        return int(shape.Fill.Visible) != 0
+    except Exception:
+        return False
+
+
+def _ajustar_altura_da_caixa_com_preenchimento(
+    caixa_letra,
+    altura_slide,
+):
+    """
+    Quando o fundo está no preenchimento da própria caixa_letra,
+    aumenta/reduz a altura da caixa para acompanhar o texto real.
+
+    A largura continua exatamente como foi definida no modelo.
+    O bloco continua centralizado verticalmente no slide.
+    """
+    limites = _limites_verticais_texto(caixa_letra)
+
+    if limites is None:
+        return False
+
+    _texto_top, texto_height = limites
+    margem = float(MARGEM_VERTICAL_FUNDO_LETRA)
+
+    # Como desligar_autoajuste() zera as margens internas da caixa,
+    # esta folga cria o respiro visual acima e abaixo do parágrafo.
+    nova_altura = max(
+        1.0,
+        float(texto_height) + (margem * 2),
+    )
+
+    try:
+        caixa_letra.Height = nova_altura
+        alinhar_shape_ao_meio_vertical_do_slide(
+            caixa_letra,
+            altura_slide,
+        )
+        return True
+    except Exception:
+        return False
+
+
+def ajustar_fundo_letra(slide, caixa_letra, altura_slide):
+    """
+    Suporta dois tipos de modelo PowerPoint:
+
+    TIPO 1 - fundo separado:
+        shape chamado "fundo_letra"
+        -> o programa ajusta Top e Height desse shape.
+
+    TIPO 2 - preenchimento na própria caixa de texto:
+        "caixa_letra" possui Fill visível
+        -> o programa ajusta a altura da própria caixa para que
+           o preenchimento cubra todo o parágrafo.
+
+    Se nenhum dos dois existir, nada é alterado e o modelo continua
+    funcionando como nas versões anteriores.
+    """
+    fundo = obter_shape_por_nome(slide, NOME_FUNDO_LETRA)
+
+    # Prioridade para o fundo separado, caso o modelo tenha sido
+    # construído dessa forma.
+    if fundo is not None:
+        limites = _limites_verticais_texto(caixa_letra)
+
+        if limites is not None:
+            texto_top, texto_height = limites
+            margem = float(MARGEM_VERTICAL_FUNDO_LETRA)
+
+            try:
+                fundo.Top = texto_top - margem
+                fundo.Height = texto_height + (margem * 2)
+                return "shape_separado"
+            except Exception:
+                pass
+
+        try:
+            fundo.Top = caixa_letra.Top
+            fundo.Height = caixa_letra.Height
+            return "shape_separado"
+        except Exception:
+            return False
+
+    # Se não existe fundo_letra separado, verifica se o próprio
+    # caixa_letra tem preenchimento aplicado no PowerPoint.
+    if _caixa_tem_preenchimento_visivel(caixa_letra):
+        if _ajustar_altura_da_caixa_com_preenchimento(
+            caixa_letra,
+            altura_slide,
+        ):
+            return "preenchimento_caixa"
+
+    return False
+
 
 
 def _abrir_powerpoint():
@@ -255,6 +394,12 @@ def gerar_ppt_com_modelo(caminho_modelo, caminho_saida, titulo, blocos):
             altura_slide,
         )
 
+        ajustar_fundo_letra(
+            slide_letra_modelo,
+            caixa_letra,
+            altura_slide,
+        )
+
         # Os novos slides entram a partir da posição 3.
         # Assim, qualquer slide 3+ do modelo continua no final.
         indice_insercao = 3
@@ -309,6 +454,12 @@ def gerar_ppt_com_modelo(caminho_modelo, caminho_saida, titulo, blocos):
                 letra_left,
                 letra_width,
                 letra_height,
+                altura_slide,
+            )
+
+            ajustar_fundo_letra(
+                novo_slide,
+                nova_caixa_letra,
                 altura_slide,
             )
 

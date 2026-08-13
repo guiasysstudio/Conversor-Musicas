@@ -4,7 +4,7 @@ title Instalador - Conversor Musicas
 cd /d "%~dp0"
 
 echo ==========================================
-echo  Conversor Musicas - Instalador v1.3.1
+echo  Conversor Musicas - Instalador v1.3.3
 echo ==========================================
 echo.
 
@@ -52,7 +52,7 @@ echo  CONCLUIDO
 echo ==========================================
 echo.
 echo Instalador:
-echo installer_output\Conversor-Musicas-Setup v1.3.1.exe
+echo installer_output\Conversor-Musicas-Setup v1.3.3.exe
 echo.
 pause
 endlocal

@@ -3,9 +3,9 @@ setlocal EnableExtensions
 title Publicar Atualizacao - Conversor Musicas
 cd /d "%~dp0"
 
-set "TAG=v1.3.1"
+set "TAG=v1.3.3"
 set "REPO=guiasysstudio/Conversor-Musicas"
-set "ARQUIVO=installer_output\Conversor-Musicas-Setup v1.3.1.exe"
+set "ARQUIVO=installer_output\Conversor-Musicas-Setup v1.3.3.exe"
 
 echo ==========================================
 echo  Conversor Musicas - Publicar Atualizacao
@@ -41,7 +41,7 @@ if errorlevel 1 (
 gh release view "%TAG%" --repo "%REPO%" >nul 2>nul
 
 if errorlevel 1 (
-    gh release create "%TAG%" "%ARQUIVO%" --repo "%REPO%" --title "Conversor Musicas v1.3.1" --notes "Versao 1.3.1: adiciona regras individuais por musica, aplicacao de regra em lote, lista de arquivos com rolagem automatica e selecao multipla. Mantem PowerPoint e SLJA validados, seletores de pasta aprimorados e atualizacao automatica."
+    gh release create "%TAG%" "%ARQUIVO%" --repo "%REPO%" --title "Conversor Musicas v1.3.3" --notes "Versao 1.3.3: adiciona fundo dinamico da letra no PowerPoint, incluindo suporte ao preenchimento da propria caixa de texto e ao shape opcional fundo_letra. Mantem regras individuais por musica, lista com rolagem, PowerPoint e SLJA validados, seletores de pasta aprimorados e atualizacao automatica."
 ) else (
     gh release upload "%TAG%" "%ARQUIVO%" --clobber --repo "%REPO%"
 )

@@ -1,0 +1,47 @@
+CONVERSOR MÚSICAS v1.3.2 - FUNDO DINÂMICO DA LETRA
+
+NOVO NOME OPCIONAL NO MODELO POWERPOINT
+
+Slide 1:
+    caixa_titulo
+
+Slide 2:
+    caixa_letra
+    fundo_letra   <- NOVO, opcional
+
+COMO USAR
+
+1. No slide 2, crie ou selecione o retângulo semitransparente que
+   deve ficar atrás da letra.
+
+2. Abra:
+   Página Inicial > Selecionar > Painel de Seleção
+
+3. Renomeie o retângulo exatamente para:
+   fundo_letra
+
+4. Deixe o retângulo atrás da caixa 'caixa_letra' na ordem das camadas.
+
+O programa preserva:
+- largura do retângulo;
+- posição horizontal;
+- cor;
+- transparência;
+- borda;
+- demais estilos definidos no modelo.
+
+A cada slide ele ajusta automaticamente SOMENTE:
+- posição vertical;
+- altura.
+
+O ajuste usa a altura real do texto renderizado. Portanto:
+- 1 linha -> fundo menor;
+- 2 linhas -> fundo acompanha as 2 linhas;
+- 3 linhas -> fundo acompanha as 3 linhas;
+- se uma linha quebrar por ser comprida, o fundo também acompanha.
+
+COMPATIBILIDADE
+
+'fundo_letra' é opcional.
+Modelos antigos que possuem apenas 'caixa_titulo' e 'caixa_letra'
+continuam funcionando exatamente como antes.

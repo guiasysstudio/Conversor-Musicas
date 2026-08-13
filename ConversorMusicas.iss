@@ -1,5 +1,5 @@
 #define MyAppName "Conversor Músicas"
-#define MyAppVersion "1.3.1"
+#define MyAppVersion "1.3.3"
 #define MyAppPublisher "GuiaSys Studio"
 #define MyAppExeName "ConversorMusicas.exe"
 
@@ -29,7 +29,7 @@ AllowNoIcons=yes
 DirExistsWarning=auto
 
 OutputDir=installer_output
-OutputBaseFilename=Conversor-Musicas-Setup v1.3.1
+OutputBaseFilename=Conversor-Musicas-Setup v1.3.3
 SetupIconFile=assets\app_icon.ico
 
 Compression=lzma2

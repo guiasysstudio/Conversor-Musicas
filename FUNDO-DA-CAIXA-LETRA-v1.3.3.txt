@@ -1,0 +1,48 @@
+CONVERSOR MÚSICAS v1.3.3 - FUNDO DA LETRA
+
+Agora existem DOIS formatos compatíveis para o fundo da letra.
+
+MODO A - PREENCHIMENTO DA PRÓPRIA CAIXA (recomendado para o modelo atual)
+
+No slide 2:
+    caixa_letra
+
+A própria caixa de texto pode ter:
+- Preenchimento da Forma;
+- cor;
+- transparência;
+- borda.
+
+Não é necessário criar outro retângulo.
+
+Quando o programa detectar que 'caixa_letra' possui preenchimento,
+ele ajustará automaticamente a ALTURA da própria caixa para acompanhar
+todo o texto renderizado.
+
+A largura permanece exatamente como definida no modelo.
+O conjunto continua centralizado verticalmente.
+
+Assim:
+- 1 linha -> caixa/fundo menor;
+- 2 linhas -> caixa/fundo cobre as 2 linhas;
+- 3 linhas -> caixa/fundo cobre as 3 linhas;
+- texto que quebrar visualmente -> fundo acompanha a quebra.
+
+MODO B - SHAPE SEPARADO
+
+Se o slide 2 possuir:
+    caixa_letra
+    fundo_letra
+
+o programa mantém o comportamento da v1.3.2:
+'fundo_letra' é redimensionado atrás da caixa.
+
+PRIORIDADE
+
+1. Se existir 'fundo_letra', usa o shape separado.
+2. Se NÃO existir 'fundo_letra', mas 'caixa_letra' tiver preenchimento,
+   usa o preenchimento da própria caixa.
+3. Se não existir nenhum dos dois, o modelo funciona normalmente sem
+   fundo dinâmico.
+
+Portanto, modelos antigos continuam compatíveis.
